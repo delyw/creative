@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fadly — UI/UX Design & Creative Direction</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,600;1,6..96,400;1,6..96,500&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0B0710;
+    --bg-deep: #150C20;
+    --panel: #1B1027;
+    --purple: #8657D9;
+    --purple-dim: #5B3D97;
+    --lavender: #C9B8ED;
+    --offwhite: #F4F0FA;
+    --offwhite-dim: rgba(244,240,250,0.62);
+    --pink: #E8B4D8;
+    --line: rgba(244,240,250,0.14);
+    --line-strong: rgba(244,240,250,0.28);
+
+    --glass-bg: rgba(244,240,250,0.055);
+    --glass-bg-strong: rgba(244,240,250,0.09);
+    --glass-border: rgba(244,240,250,0.16);
+    --glass-blur: 22px;
+    --glass-shadow: 0 8px 32px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.06);
+
+    --font-display: 'Bodoni Moda', Didot, 'Playfair Display', Georgia, 'Times New Roman', serif;
+    --font-sans: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+
+    color-scheme: dark;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  html{ scroll-behavior:smooth; background:var(--bg); }
+
+  body{
+    background:var(--bg);
+    color:var(--offwhite);
+    font-family:var(--font-sans);
+    font-size:16px;
+    line-height:1.5;
+    overflow-x:hidden;
+    cursor:none;
+  }
+
+  @media (pointer:coarse){
+    body{ cursor:auto; }
+  }
+
+  ::selection{ background:var(--purple); color:var(--offwhite); }
+
+  img{ max-width:100%; display:block; }
+
+  a{ color:inherit; text-decoration:none; }
+
+  .wrap{
+    max-width:1360px;
+    margin:0 auto;
+    padding-left:clamp(20px, 5vw, 64px);
+    padding-right:clamp(20px, 5vw, 64px);
+  }
+
+  .eyebrow{
+    font-family:var(--font-sans);
+    font-size:12px;
+    letter-spacing:0.06em;
+    color:var(--lavender);
+    font-weight:400;
+  }
+
+  /* ---------- custom cursor ---------- */
+  #cursor{
+    position:fixed;
+    top:0; left:0;
+    width:10px; height:10px;
+    border-radius:50%;
+    background:var(--offwhite);
+    pointer-events:none;
+    z-index:9999;
+    transform:translate(-50%,-50%);
+    transition:width .25s cubic-bezier(.16,1,.3,1), height .25s cubic-bezier(.16,1,.3,1), background-color .25s ease, border-color .25s ease;
+    mix-blend-mode:difference;
+  }
+  #cursor.hover{
+    width:52px; height:52px;
+    background:transparent;
+    border:1px solid var(--offwhite);
+  }
+  @media (pointer:coarse){ #cursor{ display:none; } }
+
+  /* ---------- loader ---------- */
+  #loader{
+    position:fixed; inset:0;
+    background:var(--bg);
+    z-index:10000;
+    display:flex; flex-direction:column;
+    align-items:flex-start; justify-content:flex-end;
+    padding:clamp(20px,5vw,64px);
+    transition:opacity .9s cubic-bezier(.65,0,.35,1), visibility .9s;
+  }
+  #loader.done{ opacity:0; visibility:hidden; pointer-events:none; }
+  #loader .lname{
+    font-family:var(--font-display);
+    font-size:clamp(32px,6vw,64px);
+    font-weight:400;
+    letter-spacing:-0.01em;
+    margin-bottom:12px;
+  }
+  #loader .lbar{
+    width:220px; max-width:60vw;
+    height:1px;
+    background:var(--line);
+    position:relative;
+    margin-bottom:10px;
+  }
+  #loader .lbar-fill{
+    position:absolute; left:0; top:0; height:100%;
+    width:0%;
+    background:var(--offwhite);
+    transition:width .1s linear;
+  }
+  #loader .lpct{
+    font-size:12px; letter-spacing:0.05em; color:var(--offwhite-dim);
+  }
+
+  /* ---------- nav ---------- */
+  header{
+    position:fixed; top:0; left:0; right:0;
+    z-index:500;
+    padding:22px clamp(20px,5vw,64px);
+    display:flex; align-items:center; justify-content:space-between;
+    backdrop-filter:blur(var(--glass-blur));
+    -webkit-backdrop-filter:blur(var(--glass-blur));
+    background:linear-gradient(to bottom, rgba(11,7,16,0.45), rgba(11,7,16,0.08));
+    border-bottom:1px solid rgba(244,240,250,0.06);
+    opacity:0;
+    transform:translateY(-8px);
+    transition:opacity .8s ease, transform .8s ease;
+  }
+  header.in{ opacity:1; transform:translateY(0); }
+
+  .logo{
+    font-family:var(--font-display);
+    font-size:19px;
+    letter-spacing:0.01em;
+  }
+
+  nav.links{
+    display:flex; gap:36px;
+    font-size:13px;
+    letter-spacing:0.03em;
+  }
+  nav.links a{
+    position:relative;
+    color:var(--offwhite-dim);
+    transition:color .3s ease;
+  }
+  nav.links a:hover{ color:var(--offwhite); }
+  nav.links a::after{
+    content:'';
+    position:absolute; left:0; right:0; bottom:-4px;
+    height:1px; background:var(--offwhite);
+    transform:scaleX(0); transform-origin:left;
+    transition:transform .35s cubic-bezier(.16,1,.3,1);
+  }
+  nav.links a:hover::after{ transform:scaleX(1); }
+
+  .navright{ display:flex; align-items:center; gap:20px; }
+
+  .talk-btn{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:10px 18px;
+    border:1px solid var(--line-strong);
+    border-radius:100px;
+    font-size:12.5px; letter-spacing:0.03em;
+    background:rgba(134,87,217,0.08);
+    transition:background .3s ease, border-color .3s ease, padding-right .3s ease;
+  }
+  .talk-btn svg{ transition:transform .3s cubic-bezier(.16,1,.3,1); }
+  .talk-btn:hover{ background:rgba(134,87,217,0.22); border-color:var(--purple); }
+  .talk-btn:hover svg{ transform:translateX(4px); }
+
+  .menu-btn{
+    display:none;
+    font-size:13px; letter-spacing:0.03em;
+    background:none; border:1px solid var(--line-strong);
+    border-radius:100px;
+    padding:9px 18px;
+    color:var(--offwhite);
+    cursor:pointer;
+  }
+  #menuCloseBtn{ padding:9px 18px; }
+  #menuCloseBtn.menu-close-x{
+    width:44px; height:44px; padding:0;
+    display:flex; align-items:center; justify-content:center;
+    border:1px solid var(--line-strong);
+    border-radius:50%;
+    background:transparent;
+    color:var(--offwhite);
+  }
+  #menuCloseBtn.menu-close-x:hover{
+    background:rgba(134,87,217,0.12);
+    border-color:var(--purple);
+  }
+
+  @media (max-width:820px){
+    nav.links{ display:none; }
+    header .menu-btn{ display:block; }
+  }
+
+  /* full-screen mobile menu overlay */
+  .mobile-menu{
+    position:fixed; inset:0;
+    z-index:900;
+    background:var(--bg);
+    display:flex; flex-direction:column;
+    justify-content:space-between;
+    padding:22px clamp(20px,5vw,64px) 40px;
+    transform:translateY(-100%);
+    transition:transform .6s cubic-bezier(.16,1,.3,1);
+  }
+  .mobile-menu.open{ transform:translateY(0); }
+
+  .mm-top{
+    display:flex; align-items:center; justify-content:space-between;
+  }
+
+  .mm-links{
+    display:flex; flex-direction:column;
+    gap:6px;
+    margin-top:20px;
+  }
+  .mm-links a{
+    font-family:var(--font-display);
+    font-size:clamp(44px, 13vw, 84px);
+    line-height:1.08;
+    letter-spacing:-0.01em;
+    color:var(--offwhite);
+    padding:10px 0;
+    border-top:1px solid var(--line);
+    position:relative;
+    opacity:0;
+    transform:translateY(24px);
+    transition:opacity .6s cubic-bezier(.16,1,.3,1), transform .6s cubic-bezier(.16,1,.3,1), color .3s ease;
+  }
+  .mm-links a:last-child{ border-bottom:1px solid var(--line); }
+  .mobile-menu.open .mm-links a{ opacity:1; transform:translateY(0); }
+  .mobile-menu.open .mm-links a:nth-child(1){ transition-delay:.08s; }
+  .mobile-menu.open .mm-links a:nth-child(2){ transition-delay:.16s; }
+  .mobile-menu.open .mm-links a:nth-child(3){ transition-delay:.24s; }
+  .mm-links a::before{
+    content:attr(data-i);
+    position:absolute; top:14px; right:0;
+    font-family:var(--font-sans);
+    font-size:12px; letter-spacing:0.04em;
+    color:var(--purple-dim);
+  }
+  .mm-links a:active, .mm-links a:hover{ color:var(--lavender); }
+
+  .mm-bottom{
+    display:flex; justify-content:space-between; align-items:center;
+    flex-wrap:wrap; gap:14px;
+    font-size:13px; color:var(--offwhite-dim);
+    opacity:0;
+    transition:opacity .6s ease .3s;
+  }
+  .mobile-menu.open .mm-bottom{ opacity:1; }
+  .mm-social{ display:flex; gap:20px; }
+  .mm-bottom a:hover{ color:var(--offwhite); }
+
+  body.menu-open{ overflow:hidden; }
+
+  /* ---------- hero ---------- */
+  #hero{
+    position:relative;
+    min-height:100vh;
+    display:flex; flex-direction:column;
+    justify-content:flex-end;
+    padding-bottom:80px;
+    overflow:hidden;
+  }
+  #hero-canvas{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    z-index:0;
+  }
+  .grain{
+    position:absolute; inset:0;
+    z-index:1;
+    opacity:0.35;
+    mix-blend-mode:overlay;
+    pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .hero-inner{
+    position:relative; z-index:2;
+  }
+  .hero-eyebrow{
+    opacity:0; transform:translateY(10px);
+    transition:opacity .8s ease, transform .8s ease;
+    margin-bottom:22px;
+  }
+  .hero-eyebrow.in{ opacity:1; transform:translateY(0); }
+
+  h1.hero-title{
+    font-family:var(--font-display);
+    font-weight:400;
+    font-size:clamp(40px, 7.4vw, 108px);
+    line-height:1.02;
+    letter-spacing:-0.01em;
+  }
+  h1.hero-title .line{
+    display:block;
+    overflow:hidden;
+  }
+  h1.hero-title .line span{
+    display:inline-block;
+    transform:translateY(110%);
+    transition:transform .9s cubic-bezier(.16,1,.3,1);
+  }
+  h1.hero-title .line.in span{ transform:translateY(0); }
+  h1.hero-title .line:nth-child(2){ padding-left:8vw; }
+  h1.hero-title .line:nth-child(3){ padding-left:2vw; color:var(--lavender); font-style:italic; }
+
+  .hero-sub{
+    max-width:460px;
+    margin-top:34px;
+    color:var(--offwhite-dim);
+    font-size:15.5px;
+    line-height:1.65;
+    opacity:0; transform:translateY(10px);
+    transition:opacity .8s ease .1s, transform .8s ease .1s;
+  }
+  .hero-sub.in{ opacity:1; transform:translateY(0); }
+
+  .scroll-hint{
+    position:absolute; bottom:36px; left:clamp(20px,5vw,64px);
+    z-index:2;
+    font-size:12px; letter-spacing:0.05em; color:var(--offwhite-dim);
+    display:flex; align-items:center; gap:10px;
+    opacity:0;
+    transition:opacity 1s ease .6s;
+  }
+  .scroll-hint.in{ opacity:1; }
+  .scroll-hint .stick{
+    width:1px; height:34px;
+    background:linear-gradient(var(--offwhite-dim), transparent);
+    animation:stickmove 2.2s ease-in-out infinite;
+  }
+  @keyframes stickmove{
+    0%,100%{ transform:translateY(0); opacity:.9; }
+    50%{ transform:translateY(6px); opacity:.3; }
+  }
+
+  /* ---------- sections general ---------- */
+  section{ position:relative; padding:150px 0; }
+  section.tight{ padding:110px 0; }
+
+  .section-head{
+    display:flex; justify-content:space-between; align-items:flex-end;
+    gap:40px; margin-bottom:88px;
+    flex-wrap:wrap;
+  }
+  .section-head h2{
+    font-family:var(--font-display);
+    font-weight:400;
+    font-size:clamp(32px, 5vw, 58px);
+    letter-spacing:-0.01em;
+    max-width:640px;
+  }
+  .section-head p{
+    max-width:320px;
+    color:var(--offwhite-dim);
+    font-size:14.5px;
+    line-height:1.6;
+    padding-bottom:6px;
+  }
+
+  .reveal{
+    opacity:0; transform:translateY(26px);
+    transition:opacity .9s cubic-bezier(.16,1,.3,1), transform .9s cubic-bezier(.16,1,.3,1);
+  }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+
+  /* ---------- approach ---------- */
+  #approach{ background:var(--bg-deep); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+  .approach-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:1px;
+    background:var(--line);
+    width:min(1360px, calc(100% - 40px));
+    margin:0 auto;
+  }
+  @media (min-width:1400px){
+    .approach-grid{ width:min(1360px, calc(100% - 128px)); }
+  }
+  .approach-item{
+    background:var(--bg-deep);
+    padding:48px 36px;
+  }
+  .approach-item .num{
+    font-family:var(--font-sans);
+    font-size:12px; color:var(--purple-dim);
+    letter-spacing:0.05em;
+    margin-bottom:28px;
+  }
+  .approach-item h3{
+    font-family:var(--font-display);
+    font-weight:400;
+    font-size:22px;
+    margin-bottom:14px;
+    line-height:1.25;
+  }
+  .approach-item p{
+    color:var(--offwhite-dim);
+    font-size:14.5px;
+    line-height:1.65;
+    max-width:32ch;
+  }
+  @media (max-width:820px){
+    .approach-grid{ grid-template-columns:1fr; }
+  }
+
+  /* ---------- work ---------- */
+  .project{
+    display:flex;
+    align-items:baseline;
+    gap:28px;
+    padding:34px 0;
+    border-top:1px solid var(--line);
+    cursor:pointer;
+    position:relative;
+    transition:padding-left .5s cubic-bezier(.16,1,.3,1);
+  }
+  .project:last-child{ border-bottom:1px solid var(--line); }
+  .project:hover{ padding-left:18px; }
+
+  .p-num{
+    font-size:12px; color:var(--purple-dim); letter-spacing:0.04em;
+    flex:0 0 28px;
+  }
+  .p-title{
+    font-family:var(--font-display);
+    font-weight:400;
+    font-size:clamp(28px,4.2vw,52px);
+    letter-spacing:-0.01em;
+    transition:color .4s ease;
+    flex:0 1 auto;
+  }
+  .project:hover .p-title{ color:var(--lavender); }
+
+  .p-cat{
+    font-size:12px; letter-spacing:0.03em; color:var(--offwhite-dim);
+    flex:1 1 auto;
+    text-align:right;
+    padding-right:8px;
+  }
+
+  .p-view{
+    font-size:12.5px; letter-spacing:0.03em;
+    display:inline-flex; align-items:center; gap:8px;
+    color:var(--lavender);
+    flex:0 0 auto;
+    opacity:0; transform:translateX(-6px);
+    transition:opacity .3s ease, transform .3s ease;
+  }
+  .project:hover .p-view{ opacity:1; transform:translateX(0); }
+
+  @media (max-width:700px){
+    .project{ flex-wrap:wrap; gap:6px 14px; }
+    .p-cat{ order:4; text-align:left; flex:1 0 100%; padding-right:0; }
+    .p-view{ display:none; }
+  }
+
+  /* floating preview that follows the cursor, small -> large on hover */
+  #workPreview{
+    position:fixed;
+    top:0; left:0;
+    width:280px;
+    aspect-ratio:4/3;
+    z-index:50;
+    pointer-events:none;
+    border:0;
+    overflow:hidden;
+    border-radius:0;
+    background:transparent;
+    transform:translate(-50%,-50%) scale(0.35);
+    opacity:0;
+    transition:opacity .45s cubic-bezier(.16,1,.3,1), transform .55s cubic-bezier(.16,1,.3,1);
+  }
+  #workPreview.show{
+    opacity:1;
+    transform:translate(-50%,-50%) scale(1);
+  }
+  #workPreviewImage{
+    display:block;
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    background:transparent;
+  }
+  @media (pointer:coarse){
+    #workPreview{ display:none; }
+  }
+
+  /* ---------- services ---------- */
+  #services{ background:var(--bg-deep); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+  .service-row{
+    display:flex; justify-content:space-between; align-items:baseline;
+    padding:26px 0;
+    border-top:1px solid var(--line);
+    transition:padding-left .4s cubic-bezier(.16,1,.3,1);
+  }
+  .service-row:last-child{ border-bottom:1px solid var(--line); }
+  .service-row:hover{ padding-left:16px; }
+  .service-row h4{
+    font-family:var(--font-display);
+    font-weight:400;
+    font-size:clamp(20px,3vw,32px);
+    transition:color .3s ease;
+  }
+  .service-row:hover h4{ color:var(--lavender); }
+  .service-row span{ font-size:12px; color:var(--offwhite-dim); letter-spacing:0.03em; }
+
+  /* ---------- about ---------- */
+  .about-grid{
+    display:grid;
+    grid-template-columns:1.1fr 1fr;
+    gap:80px;
+    align-items:start;
+  }
+  .about-grid h2{
+    font-family:var(--font-display);
+    font-weight:400;
+    font-size:clamp(30px,4.6vw,52px);
+    line-height:1.15;
+  }
+  .about-grid .about-body p{
+    color:var(--offwhite-dim);
+    font-size:15px;
+    line-height:1.75;
+    margin-bottom:18px;
+    max-width:52ch;
+  }
+  @media (max-width:820px){
+    .about-grid{ grid-template-columns:1fr; gap:36px; }
+  }
+
+  /* ---------- contact ---------- */
+  #contact{
+    background:radial-gradient(ellipse at 50% 100%, rgba(134,87,217,0.22), transparent 60%), var(--bg);
+    text-align:center;
+    padding:180px 0 120px;
+  }
+  #contact h2{
+    font-family:var(--font-display);
+    font-weight:400;
+    font-size:clamp(34px, 6.6vw, 86px);
+    line-height:1.06;
+    letter-spacing:-0.01em;
+    max-width:900px;
+    margin:0 auto 42px;
+  }
+  .contact-cta{
+    display:inline-flex; align-items:center; gap:12px;
+    font-size:15px; letter-spacing:0.02em;
+    padding:16px 30px;
+    border:1px solid var(--line-strong);
+    border-radius:100px;
+    transition:background .3s ease, border-color .3s ease;
+  }
+  .contact-cta svg{ transition:transform .3s cubic-bezier(.16,1,.3,1); }
+  .contact-cta:hover{ background:rgba(134,87,217,0.18); border-color:var(--purple); }
+  .contact-cta:hover svg{ transform:translate(4px,-4px); }
+
+  .contact-meta{
+    margin-top:64px;
+    display:flex; justify-content:center; gap:48px;
+    flex-wrap:wrap;
+    font-size:13px; color:var(--offwhite-dim); letter-spacing:0.02em;
+  }
+  .contact-meta a:hover{ color:var(--offwhite); }
+
+  /* ---------- footer ---------- */
+  footer{
+    border-top:1px solid var(--line);
+    padding:28px clamp(20px,5vw,64px);
+    display:flex; justify-content:space-between; align-items:center;
+    font-size:12px; color:var(--offwhite-dim); letter-spacing:0.02em;
+    flex-wrap:wrap; gap:12px;
+  }
+  footer .fright{ display:flex; gap:22px; }
+  footer .fright a:hover{ color:var(--offwhite); }
+
+  /* ---------- project detail overlay ---------- */
+  .project-overlay{
+    position:fixed; inset:0;
+    z-index:700;
+    background:var(--bg);
+    transform:translateY(100%);
+    opacity:0;
+    pointer-events:none;
+    transition:transform .7s cubic-bezier(.16,1,.3,1), opacity .5s ease;
+  }
+  .project-overlay.open{
+    transform:translateY(0);
+    opacity:1;
+    pointer-events:auto;
+  }
+  .overlay-scroll{
+    position:absolute; inset:0;
+    overflow-y:auto;
+    padding-top:120px;
+    padding-bottom:100px;
+  }
+  .overlay-close{
+    position:fixed;
+    top:24px; right:clamp(20px,5vw,64px);
+    z-index:701;
+    display:flex; align-items:center; gap:10px;
+    background:none; border:1px solid var(--line-strong);
+    border-radius:100px;
+    padding:9px 16px;
+    color:var(--offwhite);
+    font-family:var(--font-sans);
+    font-size:12.5px; letter-spacing:0.03em;
+    cursor:pointer;
+    transition:background .3s ease, border-color .3s ease;
+  }
+  .overlay-close:hover{ background:rgba(134,87,217,0.18); border-color:var(--purple); }
+
+  .ov-meta{ margin-bottom:20px; }
+  .ov-title{
+    font-family:var(--font-display);
+    font-weight:400;
+    font-size:clamp(36px, 7vw, 96px);
+    line-height:1.02;
+    letter-spacing:-0.01em;
+    max-width:900px;
+    margin-bottom:56px;
+  }
+  .ov-gallery{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    grid-template-rows:auto auto;
+    gap:16px;
+    margin-bottom:72px;
+  }
+  .ov-media img,
+  .ov-media video{
+    width:100%;
+    height:100%;
+    display:block;
+    object-fit:initial;
+    background:transparent;
+  }
+  .ov-media video{
+    background:transparent;
+    height:auto;
+    aspect-ratio:auto;
+  }
+
+  .ov-media{
+    background:transparent;
+    border:0;
+    position:relative;
+    overflow:visible;
+    border-radius:0;
+    display:block;
+  }
+  .ov-media.big{
+    grid-column:1 / 3;
+    aspect-ratio:auto;
+    height:auto;
+  }
+  .ov-media.small{
+    aspect-ratio:auto;
+    height:auto;
+  }
+  .ov-media::before{
+    display:none;
+  }
+  .ov-media span{
+    font-family:var(--font-display);
+    font-style:italic;
+    font-size:18px;
+    color:var(--offwhite-dim);
+    z-index:1;
+  }
+  .ov-media.small span{ font-size:14px; }
+  @media (max-width:700px){
+    .ov-gallery{ grid-template-columns:1fr; }
+    .ov-media.big{ grid-column:1; }
+  }
+  .ov-sections{
+    display:grid;
+    grid-template-columns:220px 1fr;
+    gap:24px 60px;
+    max-width:900px;
+  }
+  .ov-sections .ov-block{
+    display:contents;
+  }
+  .ov-sections h4{
+    font-size:12px; letter-spacing:0.04em; color:var(--purple-dim);
+    font-weight:400; padding-top:2px;
+  }
+  .ov-sections p{
+    color:var(--offwhite-dim);
+    font-size:15px; line-height:1.7;
+    padding-bottom:36px;
+    border-bottom:1px solid var(--line);
+    margin-bottom:0;
+  }
+  @media (max-width:700px){
+    .ov-sections{ grid-template-columns:1fr; gap:8px; }
+    .ov-sections h4{ padding-top:0; }
+    .ov-sections p{ padding-bottom:28px; margin-bottom:8px; }
+  }
+  .ov-next{
+    margin-top:80px;
+    background:none; border:none;
+    font-family:var(--font-display); font-style:italic;
+    font-size:clamp(24px,4vw,40px);
+    color:var(--lavender);
+    cursor:pointer;
+    padding:0;
+  }
+  .ov-next:hover{ color:var(--offwhite); }
+
+  body.overlay-active{ overflow:hidden; }
+
+  :focus-visible{ outline:1px solid var(--lavender); outline-offset:3px; }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.001ms !important; transition-duration:0.001ms !important; }
+    html{ scroll-behavior:auto; }
+  }
+</style>
+</head>
+<body>
+
+  <div id="cursor"></div>
+
+  <div id="loader">
+    <div class="lname">Fadly</div>
+    <div class="lbar"><div class="lbar-fill" id="lbarFill"></div></div>
+    <div class="lpct" id="lpct">0%</div>
+  </div>
+
+  <header id="siteHeader">
+    <div class="logo">Fadly</div>
+    <nav class="links">
+      <a href="#work">Work</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <div class="navright">
+      <a href="#contact" class="talk-btn">
+        Let's talk
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 10L10 2M10 2H4M10 2V8" stroke="currentColor" stroke-width="1.3"/></svg>
+      </a>
+      <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="mobileMenu">
+        <span class="menu-btn-label">Menu</span>
+      </button>
+    </div>
+  </header>
+
+  <div id="mobileMenu" class="mobile-menu" aria-hidden="true">
+    <div class="mm-top">
+      <div class="logo">Fadly</div>
+      <button class="menu-btn menu-close-x" id="menuCloseBtn" aria-label="Close menu">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <path d="M4 4L18 18M18 4L4 18" stroke="currentColor" stroke-width="1.3"/>
+        </svg>
+      </button>
+    </div>
+    <nav class="mm-links">
+      <a href="#work" data-i="01">Work</a>
+      <a href="#about" data-i="02">About</a>
+      <a href="#contact" data-i="03">Contact</a>
+    </nav>
+    <div class="mm-bottom">
+      <a href="mailto:delyofj@gmail.com">delyofj@gmail.com</a>
+      <div class="mm-social">
+        <!-- <a href="#" target="_blank" rel="noopener">Instagram</a> -->
+        <a href="https://www.linkedin.com/in/fadlyw/" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+  </div>
+
+  <section id="hero">
+    <canvas id="hero-canvas"></canvas>
+    <div class="grain"></div>
+    <div class="wrap hero-inner">
+      <div class="hero-eyebrow eyebrow" id="heroEyebrow">UI/UX design & creative direction — Jakarta</div>
+      <h1 class="hero-title">
+        <span class="line"><span>Design that</span></span>
+        <span class="line"><span>survives contact</span></span>
+        <span class="line"><span>with a real brief.</span></span>
+      </h1>
+      <p class="hero-sub" id="heroSub">I'm Fadly — a Creative Director and UI/UX designer working across pitches, branding, and product design, moving between content teams and R&D teams in Jakarta.</p>
+    </div>
+    <div class="scroll-hint" id="scrollHint">
+      <span class="stick"></span>
+      Scroll
+    </div>
+  </section>
+
+  <section id="approach" class="tight">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <h2>Three things I keep true</h2>
+      </div>
+    </div>
+    <div class="approach-grid reveal">
+      <div class="approach-item">
+        <div class="num">01</div>
+        <h3>Start with the brief, not the trend</h3>
+        <p>Every project starts by understanding what a client is actually trying to solve, before any visual direction gets decided.</p>
+      </div>
+      <div class="approach-item">
+        <div class="num">02</div>
+        <h3>Design and build in the same breath</h3>
+        <p>I move between concept, interface and production myself, so ideas don't lose their shape somewhere in handoff.</p>
+      </div>
+      <div class="approach-item">
+        <div class="num">03</div>
+        <h3>Make it hold up in the room</h3>
+        <p>Work has to survive a pitch meeting and a client's questions — not just look good in a portfolio scroll.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="work">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <h2>Selected work</h2>
+        <p>A few recent projects across product design, branding, and digital campaigns.</p>
+      </div>
+
+      <div class="project reveal" data-project="0">
+        <span class="p-num">01</span>
+        <h3 class="p-title">Wardah Colour Circuit</h3>
+        <span class="p-cat">Web App · Product Design</span>
+        <span class="p-view">View →</span>
+      </div>
+
+      <div class="project reveal" data-project="1">
+        <span class="p-num">02</span>
+        <h3 class="p-title">OMG</h3>
+        <span class="p-cat">Web App · Product Design</span>
+        <span class="p-view">View →</span>
+      </div>
+
+      <div class="project reveal" data-project="2">
+        <span class="p-num">03</span>
+        <h3 class="p-title">McD Spicy Gamification</h3>
+        <span class="p-cat">Web App · Product Design</span>
+        <span class="p-view">View →</span>
+      </div>
+
+      <div class="project reveal" data-project="3">
+        <span class="p-num">04</span>
+        <h3 class="p-title">Kahf Decode</h3>
+        <span class="p-cat">Web App · Product Design</span>
+        <span class="p-view">View →</span>
+      </div>
+
+      <div class="project reveal" data-project="4">
+        <span class="p-num">05</span>
+        <h3 class="p-title">PopMart Hello Moon</h3>
+        <span class="p-cat">Web App · Brand Refresh</span>
+        <span class="p-view">View →</span>
+      </div>
+    </div>
+  </section>
+
+  <div id="workPreview"><img id="workPreviewImage" src="https://raw.githubusercontent.com/delyw/assets/main/creative/hover_project.png" alt=""></div>
+
+  <section id="services" class="tight">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <h2>What I do</h2>
+      </div>
+      <div class="reveal">
+        <div class="service-row"><h4>UX Research & Strategy</h4><span>Discovery</span></div>
+        <div class="service-row"><h4>UI & Visual Design</h4><span>Interface</span></div>
+        <div class="service-row"><h4>Design Systems</h4><span>Structure</span></div>
+        <div class="service-row"><h4>Creative Direction</h4><span>Direction</span></div>
+        <div class="service-row"><h4>Pitch & Presentation Design</h4><span>Narrative</span></div>
+        <div class="service-row"><h4>Brand Identity</h4><span>Identity</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="wrap about-grid">
+      <h2 class="reveal">A bit about me.</h2>
+      <div class="about-body reveal">
+        <p>I'm a Creative Director based in Jakarta, working across pitches, branding, and creative production. Most days I'm moving between content teams and R&D teams — translating a strategy into something people can actually look at, click through, or hold in a meeting.</p>
+        <p>I care less about a portfolio that impresses on first scroll, and more about work that holds up once it's actually being used.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="wrap">
+      <h2 class="reveal">Got a brief?<br>Let's look at it together.</h2>
+      <a href="mailto:delyofj@gmail.com" class="contact-cta reveal">
+        Start a conversation
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 11.5L11.5 2.5M11.5 2.5H5M11.5 2.5V9" stroke="currentColor" stroke-width="1.3"/></svg>
+      </a>
+      <div class="contact-meta reveal">
+        <a href="mailto:delyofj@gmail.com">delyofj@gmail.com</a>
+        <span>Jakarta, Indonesia</span>
+        <!-- <a href="#" target="_blank" rel="noopener">Instagram</a> -->
+        <a href="https://www.linkedin.com/in/fadlyw/" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div>© 2026 Fadly</div>
+    <div class="fright">
+      <a href="mailto:delyofj@gmail.com">delyofj@gmail.com</a>
+      <!-- <a href="#" target="_blank" rel="noopener">Instagram</a> -->
+      <a href="https://www.linkedin.com/in/fadlyw/" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+  </footer>
+
+  <div id="projectOverlay" class="project-overlay" aria-hidden="true">
+    <div class="overlay-scroll">
+      <div class="wrap overlay-inner">
+        <button id="closeOverlay" class="overlay-close" aria-label="Close project detail">
+          <span>Close</span>
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1 1L12 12M12 1L1 12" stroke="currentColor" stroke-width="1.2"/></svg>
+        </button>
+
+        <div class="ov-meta eyebrow" id="ovMeta"></div>
+        <h2 class="ov-title" id="ovTitle"></h2>
+
+        <div class="ov-gallery" id="ovGallery"></div>
+
+        <div class="ov-sections" id="ovSections"></div>
+
+        <button class="ov-next" id="ovNext">Next project →</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+(function(){
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var isTouch = window.matchMedia('(pointer: coarse)').matches;
+
+  /* ---- loader ---- */
+  var pct = 0;
+  var fill = document.getElementById('lbarFill');
+  var pctEl = document.getElementById('lpct');
+  var loader = document.getElementById('loader');
+  function tickLoad(){
+    pct += Math.random()*18 + 6;
+    if(pct >= 100){
+      pct = 100;
+      fill.style.width = '100%';
+      pctEl.textContent = '100%';
+      setTimeout(function(){
+        loader.classList.add('done');
+        startHero();
+      }, 280);
+      return;
+    }
+    fill.style.width = pct + '%';
+    pctEl.textContent = Math.floor(pct) + '%';
+    setTimeout(tickLoad, 140);
+  }
+  setTimeout(tickLoad, 200);
+
+  /* ---- hero load-in sequence ---- */
+  function startHero(){
+    document.getElementById('siteHeader').classList.add('in');
+    document.getElementById('heroEyebrow').classList.add('in');
+    var lines = document.querySelectorAll('.hero-title .line');
+    lines.forEach(function(l, i){
+      setTimeout(function(){ l.classList.add('in'); }, 220 + i*130);
+    });
+    setTimeout(function(){
+      document.getElementById('heroSub').classList.add('in');
+      document.getElementById('scrollHint').classList.add('in');
+    }, 220 + lines.length*130 + 100);
+  }
+
+  /* ---- custom cursor ---- */
+  var cursor = document.getElementById('cursor');
+  if(!isTouch){
+    var cx=0, cy=0, tx=0, ty=0;
+    window.addEventListener('mousemove', function(e){ tx=e.clientX; ty=e.clientY; });
+    function raf(){
+      cx += (tx-cx)*0.22; cy += (ty-cy)*0.22;
+      cursor.style.left = cx+'px';
+      cursor.style.top = cy+'px';
+      requestAnimationFrame(raf);
+    }
+    raf();
+    var hoverables = document.querySelectorAll('a, button, .project, .service-row');
+    hoverables.forEach(function(el){
+      el.addEventListener('mouseenter', function(){ cursor.classList.add('hover'); });
+      el.addEventListener('mouseleave', function(){ cursor.classList.remove('hover'); });
+    });
+  }
+
+  /* ---- scroll reveal ---- */
+  var revealEls = document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){
+          en.target.classList.add('in');
+          io.unobserve(en.target);
+        }
+      });
+    }, { threshold:0.16 });
+    revealEls.forEach(function(el){ io.observe(el); });
+  } else {
+    revealEls.forEach(function(el){ el.classList.add('in'); });
+  }
+
+  /* ---- full-screen mobile menu ---- */
+  var mobileMenu = document.getElementById('mobileMenu');
+  var menuBtn = document.getElementById('menuBtn');
+  var menuCloseBtn = document.getElementById('menuCloseBtn');
+
+  function openMenu(){
+    mobileMenu.classList.add('open');
+    mobileMenu.setAttribute('aria-hidden', 'false');
+    menuBtn.setAttribute('aria-expanded', 'true');
+    document.body.classList.add('menu-open');
+  }
+  function closeMenu(){
+    mobileMenu.classList.remove('open');
+    mobileMenu.setAttribute('aria-hidden', 'true');
+    menuBtn.setAttribute('aria-expanded', 'false');
+    document.body.classList.remove('menu-open');
+  }
+  menuBtn.addEventListener('click', openMenu);
+  menuCloseBtn.addEventListener('click', closeMenu);
+  mobileMenu.querySelectorAll('.mm-links a').forEach(function(a){
+    a.addEventListener('click', closeMenu);
+  });
+  window.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') closeMenu();
+  });
+
+  /* ---- floating work preview (follows cursor, small -> large on hover) ---- */
+  if(!isTouch){
+    var wPrev = document.getElementById('workPreview');
+    var wPrevImage = document.getElementById('workPreviewImage');
+    var wpx=0, wpy=0, wtx=0, wty=0;
+    window.addEventListener('mousemove', function(e){ wtx=e.clientX; wty=e.clientY; });
+    function wpRaf(){
+      wpx += (wtx-wpx)*0.16; wpy += (wty-wpy)*0.16;
+      wPrev.style.left = wpx+'px';
+      wPrev.style.top = wpy+'px';
+      requestAnimationFrame(wpRaf);
+    }
+    wpRaf();
+    document.querySelectorAll('.project').forEach(function(el){
+      el.addEventListener('mouseenter', function(){
+        var index = parseInt(el.getAttribute('data-project'), 10) || 0;
+        var project = projectData[index];
+        wPrevImage.src = (project && project.hoverImage) || 'https://raw.githubusercontent.com/delyw/assets/main/creative/hover_project.png';
+        wPrev.classList.add('show');
+      });
+      el.addEventListener('mouseleave', function(){
+        wPrev.classList.remove('show');
+      });
+    });
+  }
+
+  /* ---- project detail overlay ---- */
+  var projectData = [
+    {
+      name: 'Wardah Colour Circuit',
+      meta: 'Web App · Product Design',
+      hoverImage: 'https://raw.githubusercontent.com/delyw/assets/main/creative/hover_project.png',
+      images: [
+        'https://raw.githubusercontent.com/delyw/assets/main/creative/animo-wheel-carousel-720p.webm',
+        'https://raw.githubusercontent.com/delyw/assets/main/creative/collage-reel-720p.webm',
+        'https://raw.githubusercontent.com/delyw/assets/main/creative/collage-reel-720p-2.webm'
+      ],
+      overview: 'A beauty experience built to turn personal color discovery into a highly visual, personalized journey.',
+      challenge: 'Make color analysis feel less like a test and more like an effortless beauty discovery.',
+      idea: 'Turn color theory into an intuitive visual experience that guides users from discovery to their perfect shade.',
+      result: 'A seamless fusion of creative direction, UX and visual storytelling that turns personalization into product discovery.'
+    },
+    {
+      name: 'OMG',
+      meta: 'Web App · Product Design',
+      hoverImage: 'https://raw.githubusercontent.com/delyw/assets/main/creative/hover_project_2.png',
+      images: [
+        'https://raw.githubusercontent.com/delyw/assets/main/creative/collage-reel-720p-5.webm',
+        'https://raw.githubusercontent.com/delyw/assets/main/creative/collage-reel-720p-4.webm',
+        'https://raw.githubusercontent.com/delyw/assets/main/creative/collage-reel-720p-3.webm'
+      ],
+      overview: 'An interactive beauty experience that turns virtual makeup discovery into a personalized journey from first impression to checkout.',
+      challenge: 'Bridge beauty inspiration and conversion without making the experience feel like just another e-commerce flow.',
+      idea: 'Turn virtual makeup into a guided experience where users discover looks, personalize their choices, and build their own beauty routine.',
+      result: 'A complete end-to-end experience connecting discovery, personalization, product selection, and purchase in one cohesive flow.'
+    },
+    {
+      name: 'McD Spicy Gamification',
+      meta: 'Web App · Product Design',
+      hoverImage: 'https://raw.githubusercontent.com/delyw/assets/main/creative/hover_project_3.png',
+      images: [
+        'https://raw.githubusercontent.com/delyw/assets/main/creative/collage-reel-720p-6.webm',
+        'https://raw.githubusercontent.com/delyw/assets/main/creative/collage-reel-720p-7.webm',
+        'https://raw.githubusercontent.com/delyw/assets/main/creative/collage-reel-720p-8.webm'
+      ],
+      overview: 'An end-to-end digital activation designed to turn a McDonald’s product campaign into an interactive customer journey.',
+      challenge: 'Connect campaign awareness with meaningful interaction while keeping a multi-step experience simple and frictionless.',
+      idea: 'Build a seamless journey that moves users from discovery and participation to real-world product interaction.',
+      result: 'A cohesive digital ecosystem that connects campaign storytelling, user engagement, and the McDonald’s in-store experience.'
+    },
+    {
+      name: 'Kahf Decode',
+      meta: 'Web App · Product Design',
+      hoverImage: 'https://raw.githubusercontent.com/delyw/assets/main/creative/hover_project_5.png',
+      images: [
+        'https://raw.githubusercontent.com/delyw/assets/main/creative/collage-reel-720p-11.webm',
+        'https://raw.githubusercontent.com/delyw/assets/main/creative/collage-reel-720p-10.webm',
+        'https://raw.githubusercontent.com/delyw/assets/main/creative/collage-reel-720p-9.webm'
+      ],
+      overview: 'An AI-powered virtual fitting experience that reimagines how users discover their fit through interactive body visualization.',
+      challenge: 'Make body measurement and fit discovery feel intuitive, approachable, and effortless for everyday users.',
+      idea: 'Turn a traditionally technical process into a guided digital experience that transforms body data into a visual representation of the user.',
+      result: 'A seamless bridge between AI, body visualization, and fashion—helping users understand their fit before they even step into the fitting room.'
+    },
+    {
+      name: 'PopMart Hello Moon',
+      meta: 'Web App · Brand Refresh',
+      hoverImage: 'https://raw.githubusercontent.com/delyw/assets/main/creative/hover_project_6.png',
+      images: [
+        'https://raw.githubusercontent.com/delyw/assets/main/creative/collage-reel-720p-12.webm',
+        'https://raw.githubusercontent.com/delyw/assets/main/creative/collage-reel-720p-13.webm',
+        'https://raw.githubusercontent.com/delyw/assets/main/creative/collage-reel-720p-14.webm'
+      ],
+      overview: 'An interactive character discovery experience that turns personality into a playful journey through the world of Space Molly.',
+      challenge: 'Create a digital experience that makes discovering your Space Molly character feel exciting, intuitive, and worth exploring.',
+      idea: 'Blend storytelling, character design, and interactive questions into a playful journey that reveals the character matching your personality.',
+      result: 'A cinematic mobile experience that transforms a simple personality quiz into an immersive Space Molly discovery moment.'
+    }
+  ];
+
+  var overlay = document.getElementById('projectOverlay');
+  var ovMeta = document.getElementById('ovMeta');
+  var ovTitle = document.getElementById('ovTitle');
+  var ovGallery = document.getElementById('ovGallery');
+  var ovSections = document.getElementById('ovSections');
+  var ovNext = document.getElementById('ovNext');
+  var currentProject = 0;
+
+  function galleryHTML(project){
+    var sizes = ['big','small','small'];
+    var images = project.images || [];
+    var out = '';
+
+    // Every work always has 3 editable media slots.
+    for(var i=0; i<3; i++){
+      var url = images[i] || '';
+      var isVideo = /\.(webm|mp4|ogg)(\?|#|$)/i.test(url);
+      out += '<div class="ov-media '+sizes[i]+'">';
+      if(url){
+        if(isVideo){
+          out += '<video autoplay muted loop playsinline preload="auto">';
+          out += '<source src="'+url+'" type="'+(url.toLowerCase().indexOf('.webm') !== -1 ? 'video/webm' : 'video/mp4')+'">';
+          out += '</video>';
+        }else{
+          out += '<img src="'+url+'" alt="'+project.name+'" loading="lazy">';
+        }
+      }
+      out += '</div>';
+    }
+
+    return out;
+  }
+
+  function openProject(i){
+    currentProject = ((i % projectData.length) + projectData.length) % projectData.length;
+    var p = projectData[currentProject];
+    ovMeta.textContent = p.meta;
+    ovTitle.textContent = p.name;
+    ovGallery.innerHTML = galleryHTML(p);
+    ovSections.innerHTML =
+      '<div class="ov-block"><h4>Overview</h4><p>'+p.overview+'</p></div>' +
+      '<div class="ov-block"><h4>The Challenge</h4><p>'+p.challenge+'</p></div>' +
+      '<div class="ov-block"><h4>The Idea</h4><p>'+p.idea+'</p></div>' +
+      '<div class="ov-block"><h4>The Result</h4><p>'+p.result+'</p></div>';
+    var nextP = projectData[(currentProject+1) % projectData.length];
+    ovNext.textContent = 'Next — ' + nextP.name + ' →';
+    overlay.classList.add('open');
+    overlay.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('overlay-active');
+    overlay.querySelector('.overlay-scroll').scrollTop = 0;
+  }
+  function closeProject(){
+    overlay.classList.remove('open');
+    overlay.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('overlay-active');
+  }
+
+  document.querySelectorAll('.project').forEach(function(el){
+    el.addEventListener('click', function(){
+      openProject(parseInt(el.getAttribute('data-project'), 10) || 0);
+    });
+  });
+  document.getElementById('closeOverlay').addEventListener('click', closeProject);
+  ovNext.addEventListener('click', function(){ openProject(currentProject+1); });
+  window.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') closeProject();
+  });
+
+  /* ---- hero canvas: atmospheric particles + orbs ---- */
+  var canvas = document.getElementById('hero-canvas');
+  var ctx = canvas.getContext('2d');
+  var W, H, dpr;
+  var orbs = [];
+  var particles = [];
+  var mouseX = 0.5, mouseY = 0.5;
+
+  function resize(){
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = canvas.offsetWidth;
+    H = canvas.offsetHeight;
+    canvas.width = W*dpr;
+    canvas.height = H*dpr;
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  function initScene(){
+    orbs = [
+      { x:0.25, y:0.35, r:0.32, hue:'134,87,217', a:0.55, sx:0.02, sy:0.015, t:0 },
+      { x:0.75, y:0.55, r:0.26, hue:'201,184,237', a:0.35, sx:-0.017, sy:0.02, t:2 },
+      { x:0.55, y:0.2, r:0.2, hue:'232,180,216', a:0.22, sx:0.012, sy:-0.018, t:4 }
+    ];
+    var count = window.innerWidth < 700 ? 46 : 110;
+    particles = [];
+    for(var i=0;i<count;i++){
+      var tint = Math.random();
+      particles.push({
+        x: Math.random(),
+        y: Math.random(),
+        r: Math.random()*1.8 + 0.5,
+        speed: Math.random()*0.00025 + 0.00006,
+        drift: (Math.random()-0.5)*0.0003,
+        phase: Math.random()*Math.PI*2,
+        baseA: Math.random()*0.5 + 0.18,
+        dx: 0, dy: 0, vx: 0, vy: 0,
+        color: tint < 0.55 ? '244,240,250' : (tint < 0.8 ? '201,184,237' : '232,180,216')
+      });
+    }
+  }
+  initScene();
+
+  if(!isTouch){
+    window.addEventListener('mousemove', function(e){
+      mouseX = e.clientX / window.innerWidth;
+      mouseY = e.clientY / window.innerHeight;
+    });
+  }
+
+  var frame = 0;
+  function draw(){
+    frame++;
+    ctx.clearRect(0,0,W,H);
+
+    // base atmospheric gradient
+    var g = ctx.createLinearGradient(0,0,0,H);
+    g.addColorStop(0, '#150C20');
+    g.addColorStop(1, '#0B0710');
+    ctx.fillStyle = g;
+    ctx.fillRect(0,0,W,H);
+
+    var px = (mouseX - 0.5) * 18;
+    var py = (mouseY - 0.5) * 14;
+
+    orbs.forEach(function(o){
+      o.t += 0.0032;
+      var ox = (o.x + Math.sin(o.t)*o.sx) * W + (reduceMotion?0:px);
+      var oy = (o.y + Math.cos(o.t*0.8)*o.sy) * H + (reduceMotion?0:py);
+      var rad = o.r * Math.max(W,H);
+      var rg = ctx.createRadialGradient(ox,oy,0, ox,oy,rad);
+      rg.addColorStop(0, 'rgba('+o.hue+','+o.a+')');
+      rg.addColorStop(1, 'rgba('+o.hue+',0)');
+      ctx.fillStyle = rg;
+      ctx.fillRect(0,0,W,H);
+    });
+
+    // cursor-reactive wave lines
+    if(!isTouch){
+      var mxPix = mouseX * W;
+      var myPix = mouseY * H;
+      var lineCount = window.innerWidth < 700 ? 5 : 8;
+      for(var li=0; li<lineCount; li++){
+        var baseY = H * (0.15 + li*(0.8/lineCount));
+        ctx.beginPath();
+        var segs = 60;
+        for(var s=0; s<=segs; s++){
+          var xPos = (s/segs) * W;
+          var distToCursor = Math.abs(xPos - mxPix) + Math.abs(baseY - myPix)*0.6;
+          var influence = Math.max(0, 1 - distToCursor/380);
+          var wobble = Math.sin((xPos*0.012) + frame*0.02 + li*1.3) * (3 + influence*26);
+          var yPos = reduceMotion ? baseY : baseY + wobble - influence*10;
+          if(s===0) ctx.moveTo(xPos, yPos); else ctx.lineTo(xPos, yPos);
+        }
+        ctx.strokeStyle = 'rgba(201,184,237,' + (0.05 + li*0.006) + ')';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+    }
+
+    particles.forEach(function(p){
+      if(!reduceMotion){
+        p.y -= p.speed;
+        p.x += p.drift;
+        if(p.y < -0.02) p.y = 1.02;
+        if(p.x < -0.02) p.x = 1.02;
+        if(p.x > 1.02) p.x = -0.02;
+      }
+      var baseX = p.x*W, baseY = p.y*H;
+      var drawX = baseX + p.dx, drawY = baseY + p.dy;
+
+      if(!isTouch && !reduceMotion){
+        var mxp = mouseX*W, myp = mouseY*H;
+        var ddx = drawX - mxp, ddy = drawY - myp;
+        var dist = Math.sqrt(ddx*ddx + ddy*ddy) || 0.001;
+        var repelRadius = 130;
+        if(dist < repelRadius){
+          var force = (1 - dist/repelRadius) * 3.4;
+          p.vx += (ddx/dist) * force;
+          p.vy += (ddy/dist) * force;
+        }
+        // spring back toward natural position + friction
+        p.vx += -p.dx * 0.02;
+        p.vy += -p.dy * 0.02;
+        p.vx *= 0.9;
+        p.vy *= 0.9;
+        p.dx += p.vx;
+        p.dy += p.vy;
+        drawX = baseX + p.dx;
+        drawY = baseY + p.dy;
+      }
+
+      var flick = 0.6 + 0.4*Math.sin(frame*0.02 + p.phase);
+      var scatterBoost = Math.min(1, (Math.abs(p.dx)+Math.abs(p.dy))/40);
+      ctx.beginPath();
+      ctx.fillStyle = 'rgba('+p.color+','+ (Math.min(1, p.baseA*flick + scatterBoost*0.4)).toFixed(3) +')';
+      ctx.arc(drawX, drawY, p.r + scatterBoost*1.2, 0, Math.PI*2);
+      ctx.fill();
+    });
+
+    requestAnimationFrame(draw);
+  }
+  draw();
+
+})();
+</script>
+</body>
+</html>
